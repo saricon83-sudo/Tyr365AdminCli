@@ -2,52 +2,51 @@ package teamToolboxCmd
 
 import (
 	"fmt"
+	"os"
 
 	teamToolboxHelper "github.com/saricon83-sudo/Tyr365AdminCli/TeamToolBoxHelper"
 	"github.com/spf13/cobra"
 )
 
-var getToolsByDay = &cobra.Command{
-	Use:   "addToolToDb",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+var days int
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+var getRequestsByDay = &cobra.Command{
+	Use:   "getRequestsByDay",
+	Short: "Get daily request counts for the last N days",
+	Long: `Retrieves daily request counts for the last N days from the admin API.
+
+This command calls GET /stats/requests-by-day and returns statistics including:
+- Date
+- Total count of requests
+- Completed requests
+- Error count
+
+Example:
+  365Admin teamToolbox getRequestsByDay --days 7
+  365Admin teamToolbox getRequestsByDay --days 30`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// logger := logging.GetLogger()
-		queryParams := make(map[string]interface{})
-		if toolName != "" {
-			queryParams["toolName"] = toolName
-		}
-		if currentTemplateId >= 0 {
-			queryParams["currentTemlplateId"] = currentTemplateId
-		}
-		if topicName != "" {
-			queryParams["topicName"] = topicName
-		}
-
-		client, err := teamToolboxHelper.CreateClient()
+		adminAPI, err := teamToolboxHelper.CreateAdminAPI()
 		if err != nil {
-			fmt.Println(err)
-		}
-		jsonBody, err := teamToolboxHelper.MarshalToJSON(queryParams)
-		if err != nil {
-			fmt.Println(err)
+			fmt.Fprintf(os.Stderr, "Error creating admin API client: %v\n", err)
 			return
 		}
-		response, err := client.PostWithJSONBody("addToolToDb", jsonBody)
 
+		results, err := adminAPI.GetRequestsByDay(days)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Fprintf(os.Stderr, "Error fetching requests by day: %v\n", err)
+			return
 		}
-		fmt.Println(string(response))
+
+		if len(results) == 0 {
+			fmt.Println("No request data found for the specified period.")
+			return
+		}
+
+		teamToolboxHelper.PrintDailyRequestCountTable(results)
 	},
 }
 
 func init() {
-	TeamToolboxCmd.AddCommand(addToolToDbCmd)
-
+	TeamToolboxCmd.AddCommand(getRequestsByDay)
+	getRequestsByDay.Flags().IntVar(&days, "days", 30, "Number of days to look back (default: 30)")
 }
