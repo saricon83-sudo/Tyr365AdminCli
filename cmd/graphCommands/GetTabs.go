@@ -6,7 +6,7 @@ package graphCommands
 import (
 	"fmt"
 
-	teamGovHttp "github.com/GustavELinden/Tyr365AdminCli/TeamsGovernance"
+	teamGovHttp "github.com/saricon83-sudo/Tyr365AdminCli/TeamsGovernance"
 	models "github.com/microsoftgraph/msgraph-sdk-go/models"
 	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"

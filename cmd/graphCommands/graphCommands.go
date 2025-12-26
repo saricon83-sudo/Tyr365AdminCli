@@ -6,7 +6,7 @@ package graphCommands
 import (
 	"log"
 
-	graphhelper "github.com/GustavELinden/Tyr365AdminCli/graphHelper"
+	graphhelper "github.com/saricon83-sudo/Tyr365AdminCli/graphHelper"
 	"github.com/spf13/cobra"
 )
 

@@ -1,7 +1,7 @@
 package archivercmd
 
 import (
-	archiver "github.com/GustavELinden/Tyr365AdminCli/m365Archiver"
+	archiver "github.com/saricon83-sudo/Tyr365AdminCli/m365Archiver"
 	"github.com/spf13/cobra"
 )
 

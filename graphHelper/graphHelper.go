@@ -9,8 +9,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/GustavELinden/Tyr365AdminCli/internal/auth"
-	"github.com/GustavELinden/Tyr365AdminCli/internal/config"
+	"github.com/saricon83-sudo/Tyr365AdminCli/internal/auth"
+	"github.com/saricon83-sudo/Tyr365AdminCli/internal/config"
 	"github.com/google/uuid"
 	bmodels "github.com/microsoftgraph/msgraph-beta-sdk-go/models"
 	models "github.com/microsoftgraph/msgraph-sdk-go/models"

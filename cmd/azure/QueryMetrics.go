@@ -6,7 +6,7 @@ package azure
 import (
 	"fmt"
 
-	azurehelper "github.com/GustavELinden/Tyr365AdminCli/AzureHelper"
+	azurehelper "github.com/saricon83-sudo/Tyr365AdminCli/AzureHelper"
 	"github.com/spf13/cobra"
 )
 

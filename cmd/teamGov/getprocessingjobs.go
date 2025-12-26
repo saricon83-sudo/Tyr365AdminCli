@@ -7,8 +7,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	teamGovHttp "github.com/GustavELinden/Tyr365AdminCli/TeamsGovernance"
-	logging "github.com/GustavELinden/Tyr365AdminCli/logger"
+	teamGovHttp "github.com/saricon83-sudo/Tyr365AdminCli/TeamsGovernance"
+	logging "github.com/saricon83-sudo/Tyr365AdminCli/logger"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"

@@ -10,8 +10,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/GustavELinden/Tyr365AdminCli/internal/config"
-	"github.com/GustavELinden/Tyr365AdminCli/internal/httputil"
+	"github.com/saricon83-sudo/Tyr365AdminCli/internal/config"
+	"github.com/saricon83-sudo/Tyr365AdminCli/internal/httputil"
 )
 
 // Token represents a cached API token with expiration

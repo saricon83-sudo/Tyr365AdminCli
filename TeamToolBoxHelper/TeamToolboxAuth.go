@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/GustavELinden/Tyr365AdminCli/internal/config"
+	"github.com/saricon83-sudo/Tyr365AdminCli/internal/config"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 )

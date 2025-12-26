@@ -3,10 +3,10 @@ package teamGov
 import (
 	"fmt"
 
-	logging "github.com/GustavELinden/Tyr365AdminCli/logger"
+	logging "github.com/saricon83-sudo/Tyr365AdminCli/logger"
 	log "github.com/sirupsen/logrus"
 
-	teamGovHttp "github.com/GustavELinden/Tyr365AdminCli/TeamsGovernance"
+	teamGovHttp "github.com/saricon83-sudo/Tyr365AdminCli/TeamsGovernance"
 	"github.com/spf13/cobra"
 )
 

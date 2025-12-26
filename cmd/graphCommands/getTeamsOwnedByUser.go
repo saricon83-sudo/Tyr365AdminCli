@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"os"
 
-	saveToFile "github.com/GustavELinden/Tyr365AdminCli/SaveToFile"
-	logging "github.com/GustavELinden/Tyr365AdminCli/logger"
+	saveToFile "github.com/saricon83-sudo/Tyr365AdminCli/SaveToFile"
+	logging "github.com/saricon83-sudo/Tyr365AdminCli/logger"
 	"github.com/olekukonko/tablewriter"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"

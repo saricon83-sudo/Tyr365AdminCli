@@ -12,8 +12,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/GustavELinden/Tyr365AdminCli/internal/auth"
-	"github.com/GustavELinden/Tyr365AdminCli/internal/config"
+	"github.com/saricon83-sudo/Tyr365AdminCli/internal/auth"
+	"github.com/saricon83-sudo/Tyr365AdminCli/internal/config"
 	"github.com/olekukonko/tablewriter"
 )
 

@@ -11,9 +11,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/GustavELinden/Tyr365AdminCli/internal/auth"
-	"github.com/GustavELinden/Tyr365AdminCli/internal/config"
-	logging "github.com/GustavELinden/Tyr365AdminCli/logger"
+	"github.com/saricon83-sudo/Tyr365AdminCli/internal/auth"
+	"github.com/saricon83-sudo/Tyr365AdminCli/internal/config"
+	logging "github.com/saricon83-sudo/Tyr365AdminCli/logger"
 	"github.com/olekukonko/tablewriter"
 	log "github.com/sirupsen/logrus"
 )
@@ -255,7 +255,7 @@ func Post(endpoint string, queryParams map[string]string) ([]byte, error) {
 func PostSharePointUrl(sharePointUrl string) error {
 	// Define the URL to which the POST request will be sent.
 	logger := logging.GetLogger()
-	url := "https://github.com/GustavELinden/Tyr365AdminCli/security/secret-scanning/unblock-secret/2igdI04NqFYw9qo0dFVP8uiIGNj"
+	url := "https://github.com/saricon83-sudo/Tyr365AdminCli/security/secret-scanning/unblock-secret/2igdI04NqFYw9qo0dFVP8uiIGNj"
 
 	// Create a map to hold the JSON payload.
 	payload := map[string]string{

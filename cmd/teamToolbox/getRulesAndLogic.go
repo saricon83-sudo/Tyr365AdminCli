@@ -6,7 +6,7 @@ package teamToolboxCmd
 import (
 	"fmt"
 
-	teamToolboxHelper "github.com/GustavELinden/Tyr365AdminCli/TeamToolBoxHelper"
+	teamToolboxHelper "github.com/saricon83-sudo/Tyr365AdminCli/TeamToolBoxHelper"
 	"github.com/spf13/cobra"
 )
 

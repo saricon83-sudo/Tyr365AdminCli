@@ -15,9 +15,9 @@ import (
 	"time"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
-	azurehelper "github.com/GustavELinden/Tyr365AdminCli/AzureHelper"
-	teamGovHttp "github.com/GustavELinden/Tyr365AdminCli/TeamsGovernance"
-	GraphHelper "github.com/GustavELinden/Tyr365AdminCli/graphHelper"
+	azurehelper "github.com/saricon83-sudo/Tyr365AdminCli/AzureHelper"
+	teamGovHttp "github.com/saricon83-sudo/Tyr365AdminCli/TeamsGovernance"
+	GraphHelper "github.com/saricon83-sudo/Tyr365AdminCli/graphHelper"
 	"github.com/pterm/pterm"
 	"github.com/pterm/pterm/putils"
 	"github.com/spf13/cobra"

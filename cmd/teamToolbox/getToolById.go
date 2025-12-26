@@ -6,8 +6,8 @@ package teamToolboxCmd
 import (
 	"fmt"
 
-	teamToolboxHelper "github.com/GustavELinden/Tyr365AdminCli/TeamToolBoxHelper"
-	teamGovHttp "github.com/GustavELinden/Tyr365AdminCli/TeamsGovernance"
+	teamToolboxHelper "github.com/saricon83-sudo/Tyr365AdminCli/TeamToolBoxHelper"
+	teamGovHttp "github.com/saricon83-sudo/Tyr365AdminCli/TeamsGovernance"
 	"github.com/spf13/cobra"
 )
 var toolId string

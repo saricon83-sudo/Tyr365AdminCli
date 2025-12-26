@@ -3,7 +3,7 @@ package teamGov
 import (
 	"fmt"
 
-	"github.com/GustavELinden/Tyr365AdminCli/internal/auth"
+	"github.com/saricon83-sudo/Tyr365AdminCli/internal/auth"
 )
 
 // TokenCache is kept for backward compatibility.
