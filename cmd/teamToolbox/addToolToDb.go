@@ -35,22 +35,22 @@ to quickly create a Cobra application.`,
 			queryParams["topicName"] = topicName
 		}
 
-				client , err :=	teamToolboxHelper.CreateClient()
-if err != nil {
-	fmt.Println(err)
-}
-jsonBody, err := teamToolboxHelper.MarshalToJSON(queryParams)
-if err != nil {
-	fmt.Println(err)
-return
-}
-response, err := client.PostWithJSONBody("addToolToDb", jsonBody)
-
-
-if err != nil {
-fmt.Println(err)
-}
-	fmt.Println(string(response))
+		client, err := teamToolboxHelper.CreateClient()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		jsonBody, err := teamToolboxHelper.MarshalToJSON(queryParams)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		response, err := client.PostWithJSONBody("addToolToDb", jsonBody)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Println(string(response))
 	},
 }
 

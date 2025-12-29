@@ -43,7 +43,7 @@ func (api *AdminAPI) doGet(endpoint string, result interface{}) error {
 		return fmt.Errorf("failed to get authenticated client: %w", err)
 	}
 
-	address := fmt.Sprintf("%s/api/admin%s", api.client.BaseURL, endpoint)
+	address := fmt.Sprintf("%s/admincli%s", api.client.BaseURL, endpoint)
 	resp, err := httpClient.Get(address)
 	if err != nil {
 		return fmt.Errorf("failed to make GET request: %w", err)
@@ -75,7 +75,7 @@ func (api *AdminAPI) doPost(endpoint string, requestBody interface{}, result int
 		return fmt.Errorf("failed to get authenticated client: %w", err)
 	}
 
-	address := fmt.Sprintf("%s/api/admin%s", api.client.BaseURL, endpoint)
+	address := fmt.Sprintf("%s/admincli%s", api.client.BaseURL, endpoint)
 
 	var bodyReader io.Reader
 	if requestBody != nil {
@@ -117,7 +117,7 @@ func (api *AdminAPI) doPatch(endpoint string, requestBody interface{}, result in
 		return fmt.Errorf("failed to get authenticated client: %w", err)
 	}
 
-	address := fmt.Sprintf("%s/api/admin%s", api.client.BaseURL, endpoint)
+	address := fmt.Sprintf("%s/admincli%s", api.client.BaseURL, endpoint)
 
 	jsonBody, err := json.Marshal(requestBody)
 	if err != nil {
@@ -161,7 +161,7 @@ func (api *AdminAPI) doDelete(endpoint string, result interface{}) error {
 		return fmt.Errorf("failed to get authenticated client: %w", err)
 	}
 
-	address := fmt.Sprintf("%s/api/admin%s", api.client.BaseURL, endpoint)
+	address := fmt.Sprintf("%s/admincli%s", api.client.BaseURL, endpoint)
 
 	req, err := http.NewRequest(http.MethodDelete, address, nil)
 	if err != nil {
