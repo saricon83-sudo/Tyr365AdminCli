@@ -17,6 +17,8 @@ import (
 
 	"github.com/saricon83-sudo/Tyr365AdminCli/internal/config"
 	logging "github.com/saricon83-sudo/Tyr365AdminCli/logger"
+	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/putils"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -36,13 +38,9 @@ var (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "365Admin",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Tyr365AdminCli is an admin management console for work APIs",
+	Long: `Cobra-based CLI tool to manage Teams Governance, M365 Archiver, 
+Team Toolbox, and Microsoft Graph integrations.`,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		if fileLog {
 			today := time.Now().Format("06-01-02.json") // yy-mm-dd.json format
@@ -53,7 +51,39 @@ to quickly create a Cobra application.`,
 	},
 
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("365Admin")
+		ptermLogo, _ := pterm.DefaultBigText.WithLetters(
+			putils.LettersFromStringWithStyle("365", pterm.NewStyle(pterm.FgLightCyan)),
+			putils.LettersFromStringWithStyle("Admin", pterm.NewStyle(pterm.FgLightMagenta))).
+			Srender()
+
+		pterm.DefaultCenter.Println(ptermLogo)
+		pterm.DefaultCenter.Println(pterm.LightBlue("Interactive Admin Management Assistant"))
+		fmt.Println()
+
+		options := []string{
+			"🩺 Run System Diagnostics (Doctor)",
+			"🌳 Inspect Active Configs (Secure Tree)",
+			"❓ Show Command Line Help",
+			"🚪 Exit",
+		}
+
+		selected, err := pterm.DefaultInteractiveSelect.
+			WithOptions(options).
+			Show("Please choose an operation")
+		if err != nil {
+			return
+		}
+
+		switch selected {
+		case "🩺 Run System Diagnostics (Doctor)":
+			doctorCmd.Run(cmd, nil)
+		case "🌳 Inspect Active Configs (Secure Tree)":
+			configShowCmd.Run(cmd, nil)
+		case "❓ Show Command Line Help":
+			cmd.Help()
+		case "🚪 Exit":
+			pterm.Info.Println("Goodbye!")
+		}
 	},
 }
 
