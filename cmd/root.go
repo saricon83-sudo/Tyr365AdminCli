@@ -16,6 +16,7 @@ import (
 	teamToolboxCmd "github.com/saricon83-sudo/Tyr365AdminCli/cmd/teamToolbox"
 
 	"github.com/saricon83-sudo/Tyr365AdminCli/internal/config"
+	"github.com/saricon83-sudo/Tyr365AdminCli/internal/output"
 	logging "github.com/saricon83-sudo/Tyr365AdminCli/logger"
 	"github.com/pterm/pterm"
 	"github.com/pterm/pterm/putils"
@@ -27,6 +28,7 @@ var (
 	logFile string
 )
 var cfgFile string
+var outputFormat string
 var Output bool
 var logFilePath string
 var debug bool
@@ -42,6 +44,9 @@ var rootCmd = &cobra.Command{
 	Long: `Cobra-based CLI tool to manage Teams Governance, M365 Archiver, 
 Team Toolbox, and Microsoft Graph integrations.`,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		if format, err := cmd.Flags().GetString("output"); err == nil {
+			output.SetFormat(format)
+		}
 		if fileLog {
 			today := time.Now().Format("06-01-02.json") // yy-mm-dd.json format
 			logging.SetupLogging(today, useJSON)        // Setup logging to JSON file named with today's date
@@ -111,6 +116,7 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&Output, "stdout", "", false, "Output to standard output")
 	rootCmd.PersistentFlags().BoolVarP(&useJSON, "useJson", "", false, "Output logs in JSON format")
 	rootCmd.PersistentFlags().BoolVarP(&fileLog, "fileLog", "", false, "Log to a JSON file named with today's date")
+	rootCmd.PersistentFlags().StringVarP(&outputFormat, "output", "o", "table", "Output format: table|json|yaml")
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
 }

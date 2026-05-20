@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	teamGovHttp "github.com/saricon83-sudo/Tyr365AdminCli/TeamsGovernance"
+	"github.com/saricon83-sudo/Tyr365AdminCli/internal/output"
 	logging "github.com/saricon83-sudo/Tyr365AdminCli/logger"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -57,5 +58,5 @@ func init() {
 }
 
 func ViewTable(d teamGovHttp.Printer) {
-	d.PrintTable()
+	output.PrintResult(d, d.PrintTable)
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/pterm/pterm"
 	teamToolboxHelper "github.com/saricon83-sudo/Tyr365AdminCli/TeamToolBoxHelper"
 	teamGovHttp "github.com/saricon83-sudo/Tyr365AdminCli/TeamsGovernance"
+	"github.com/saricon83-sudo/Tyr365AdminCli/internal/output"
 	"github.com/spf13/cobra"
 )
 
@@ -80,7 +81,7 @@ If you do not specify a --toolId flag, the tool will launch an interactive catal
 }
 
 func ViewTable(d teamGovHttp.Printer) {
-	d.PrintTable()
+	output.PrintResult(d, d.PrintTable)
 }
 func init() {
 	getToolByIdCmd.Flags().StringVarP(&toolId, "toolId", "", "", "Id of tool")
