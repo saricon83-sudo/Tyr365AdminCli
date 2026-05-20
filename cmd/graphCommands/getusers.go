@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/microsoftgraph/msgraph-sdk-go/models"
 	saveToFile "github.com/saricon83-sudo/Tyr365AdminCli/SaveToFile"
 	graphhelper "github.com/saricon83-sudo/Tyr365AdminCli/graphHelper"
-	"github.com/microsoftgraph/msgraph-sdk-go/models"
 	"github.com/spf13/cobra"
 )
 

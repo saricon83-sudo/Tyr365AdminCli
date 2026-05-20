@@ -7,8 +7,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	teamGovHttp "github.com/saricon83-sudo/Tyr365AdminCli/TeamsGovernance"
 	"github.com/pterm/pterm"
+	teamGovHttp "github.com/saricon83-sudo/Tyr365AdminCli/TeamsGovernance"
 	"github.com/spf13/cobra"
 )
 

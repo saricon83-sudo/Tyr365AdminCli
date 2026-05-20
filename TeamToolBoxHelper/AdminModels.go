@@ -94,18 +94,18 @@ type PendingCountsSummary struct {
 
 // Request represents a request record
 type Request struct {
-	Id             int            `json:"id"`
-	GroupId        string         `json:"groupId"`
-	Endpoint       string         `json:"endpoint"`
-	Status         string         `json:"status"`
-	Priority       int            `json:"priority"`
-	RetryCount     int            `json:"retryCount"`
-	Hidden         bool           `json:"hidden"`
-	Message        string         `json:"message"`
-	InitiatedBy    string         `json:"initiatedBy"`
-	Created        time.Time      `json:"created"`
-	Modified       time.Time      `json:"modified"`
-	RequestSteps   []RequestStep  `json:"requestSteps,omitempty"`
+	Id             int             `json:"id"`
+	GroupId        string          `json:"groupId"`
+	Endpoint       string          `json:"endpoint"`
+	Status         string          `json:"status"`
+	Priority       int             `json:"priority"`
+	RetryCount     int             `json:"retryCount"`
+	Hidden         bool            `json:"hidden"`
+	Message        string          `json:"message"`
+	InitiatedBy    string          `json:"initiatedBy"`
+	Created        time.Time       `json:"created"`
+	Modified       time.Time       `json:"modified"`
+	RequestSteps   []RequestStep   `json:"requestSteps,omitempty"`
 	ExportDataJobs []ExportDataJob `json:"exportDataJobs,omitempty"`
 }
 
@@ -189,18 +189,18 @@ type TblToolRequest struct {
 
 // ToolFullDetails represents full tool details with rules and requirements
 type ToolFullDetails struct {
-	Id                   int                        `json:"id"`
-	ToolName             string                     `json:"toolName"`
-	ToolDescription      string                     `json:"toolDescription"`
-	TopicName            string                     `json:"topicName"`
-	InfoPageUrl          string                     `json:"infoPageUrl"`
-	FormTemplate         string                     `json:"formTemplate"`
-	CurrentTemplateId    int                        `json:"currentTemplateId"`
-	Enabled              bool                       `json:"enabled"`
-	RequiresArchiving    bool                       `json:"requiresArchiving"`
-	InstanceCount        int                        `json:"instanceCount"`
-	RequestCount         int                        `json:"requestCount"`
-	Rules                []TblToolRuleLogic         `json:"rules"`
+	Id                   int                          `json:"id"`
+	ToolName             string                       `json:"toolName"`
+	ToolDescription      string                       `json:"toolDescription"`
+	TopicName            string                       `json:"topicName"`
+	InfoPageUrl          string                       `json:"infoPageUrl"`
+	FormTemplate         string                       `json:"formTemplate"`
+	CurrentTemplateId    int                          `json:"currentTemplateId"`
+	Enabled              bool                         `json:"enabled"`
+	RequiresArchiving    bool                         `json:"requiresArchiving"`
+	InstanceCount        int                          `json:"instanceCount"`
+	RequestCount         int                          `json:"requestCount"`
+	Rules                []TblToolRuleLogic           `json:"rules"`
 	ExtendedRequirements []TblToolExtendedRequirement `json:"extendedRequirements"`
 }
 
@@ -313,13 +313,13 @@ type ViewGroup struct {
 
 // ArchiveJob represents an archive job
 type ArchiveJob struct {
-	Id            int             `json:"id"`
-	GroupId       string          `json:"groupId"`
-	Status        string          `json:"status"`
-	JobType       string          `json:"jobType"`
-	Message       string          `json:"message"`
-	Created       time.Time       `json:"created"`
-	Modified      time.Time       `json:"modified"`
+	Id             int             `json:"id"`
+	GroupId        string          `json:"groupId"`
+	Status         string          `json:"status"`
+	JobType        string          `json:"jobType"`
+	Message        string          `json:"message"`
+	Created        time.Time       `json:"created"`
+	Modified       time.Time       `json:"modified"`
 	ArchiveSubJobs []ArchiveSubJob `json:"archiveSubJobs,omitempty"`
 }
 
@@ -336,11 +336,11 @@ type ArchiveSubJob struct {
 
 // RequiredArchiveJob represents a required archive job
 type RequiredArchiveJob struct {
-	GroupId     string    `json:"groupId"`
-	TeamName    string    `json:"teamName"`
-	Retention   string    `json:"retention"`
-	ExpiryDate  time.Time `json:"expiryDate"`
-	Status      string    `json:"status"`
+	GroupId    string    `json:"groupId"`
+	TeamName   string    `json:"teamName"`
+	Retention  string    `json:"retention"`
+	ExpiryDate time.Time `json:"expiryDate"`
+	Status     string    `json:"status"`
 }
 
 // ExportDataJob represents an export data job

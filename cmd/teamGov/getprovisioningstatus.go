@@ -50,7 +50,7 @@ var getprovisioningstatusCmd = &cobra.Command{
 func init() {
 	getprovisioningstatusCmd.Flags().Int32VarP(&requestId, "requestId", "r", 0, "The id of the request to requeue")
 	if err := getprovisioningstatusCmd.MarkFlagRequired("requestId"); err != nil {
-   fmt.Print("Supply a RequestId")
+		fmt.Print("Supply a RequestId")
 	}
 
 	TeamGovCmd.AddCommand(getprovisioningstatusCmd)

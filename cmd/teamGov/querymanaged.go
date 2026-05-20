@@ -30,7 +30,7 @@ Example usage:
 teamGov querymanaged --groupId "12345" --teamName "MyTeam" --status "active" --origin "internal" --retention "permanent" --fields "Id,teamName,status"`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// Processing flags and constructing query parameters map
-			logger := logging.GetLogger()
+		logger := logging.GetLogger()
 		queryParams := make(map[string]string)
 		if groupId != "" {
 			queryParams["groupId"] = groupId
@@ -54,9 +54,9 @@ teamGov querymanaged --groupId "12345" --teamName "MyTeam" --status "active" --o
 		body, err := teamGovHttp.GetQuery("QueryManagedTeams", queryParams)
 		if err != nil {
 			logger.WithFields(log.Fields{
-				"url":    "/api/teams/QueryManagedTeams",
-				"method": "GET",
-				"status": "Error",
+				"url":         "/api/teams/QueryManagedTeams",
+				"method":      "GET",
+				"status":      "Error",
 				"queryParams": queryParams,
 			}).Error(err)
 			return
@@ -90,11 +90,11 @@ teamGov querymanaged --groupId "12345" --teamName "MyTeam" --status "active" --o
 
 			err := saveToFile.SaveDataToJSONFile(managedTeams, fileName+".json")
 			if err != nil {
-			logger.WithFields(log.Fields{
-				"url":    "/api/teams/QueryManagedTeams",
-				"method": "SaveDataToJsonFile",
-				"status": "Error",
-			}).Error(err)
+				logger.WithFields(log.Fields{
+					"url":    "/api/teams/QueryManagedTeams",
+					"method": "SaveDataToJsonFile",
+					"status": "Error",
+				}).Error(err)
 				return
 			}
 			logger.WithFields(log.Fields{

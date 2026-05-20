@@ -11,10 +11,10 @@ import (
 	"os"
 	"strings"
 
+	"github.com/olekukonko/tablewriter"
 	"github.com/saricon83-sudo/Tyr365AdminCli/internal/auth"
 	"github.com/saricon83-sudo/Tyr365AdminCli/internal/config"
 	logging "github.com/saricon83-sudo/Tyr365AdminCli/logger"
-	"github.com/olekukonko/tablewriter"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -251,11 +251,22 @@ func Post(endpoint string, queryParams map[string]string) ([]byte, error) {
 	return response, nil
 }
 
-// postSharePointUrl makes an HTTP POST request to a predefined URL with a JSON body containing the SharePoint URL.
+// PostSharePointUrl makes an HTTP POST request to the Teams Governance removeRetention Azure Function with a JSON body containing the SharePoint URL.
 func PostSharePointUrl(sharePointUrl string) error {
-	// Define the URL to which the POST request will be sent.
+	cfg := config.Get()
 	logger := logging.GetLogger()
-	url := "https://github.com/saricon83-sudo/Tyr365AdminCli/security/secret-scanning/unblock-secret/2igdI04NqFYw9qo0dFVP8uiIGNj"
+
+	token, err := AuthGovernanceApi()
+	if err != nil || token == "" {
+		logger.WithFields(log.Fields{
+			"url":    "/AzureFunction/removeRetention",
+			"method": "Post",
+			"status": "Error",
+		}).Error("failed to get authentication token")
+		return fmt.Errorf("failed to get authentication token: %w", err)
+	}
+
+	url := cfg.GetString("resource") + "/api/teams/AzureFunction/removeRetention"
 
 	// Create a map to hold the JSON payload.
 	payload := map[string]string{
@@ -284,8 +295,9 @@ func PostSharePointUrl(sharePointUrl string) error {
 		return err
 	}
 
-	// Set the Content-Type header to indicate JSON payload.
+	// Set headers
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+token)
 
 	// Create a new HTTP client and execute the request.
 	client := &http.Client{}

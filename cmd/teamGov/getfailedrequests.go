@@ -3,10 +3,10 @@ package teamGov
 import (
 	"fmt"
 
+	"github.com/pterm/pterm"
 	saveToFile "github.com/saricon83-sudo/Tyr365AdminCli/SaveToFile"
 	teamGovHttp "github.com/saricon83-sudo/Tyr365AdminCli/TeamsGovernance"
 	logging "github.com/saricon83-sudo/Tyr365AdminCli/logger"
-	"github.com/pterm/pterm"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )

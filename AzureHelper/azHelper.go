@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"os/exec"
+
+	"github.com/saricon83-sudo/Tyr365AdminCli/internal/config"
 )
 
 type MetricResponse struct {
@@ -47,13 +49,20 @@ type MetricsResult struct {
 }
 
 func GetMetrics() (*MetricsResult, error) {
+	cfg := config.Get()
+	resourcePath := cfg.GetString("azure.monitorResource")
+	if resourcePath == "" {
+		// Safe fallback to original hardcoded path for backwards compatibility
+		resourcePath = "/subscriptions/e61fd8d2-77dc-42a8-a356-5537e74d8a87/resourceGroups/teamsprovisioning/providers/Microsoft.Web/sites/TyrensTeamsGovWebApi"
+	}
+
 	azureCLICommand := []string{
 		"az",
 		"monitor",
 		"metrics",
 		"list",
 		"--resource",
-		"/subscriptions/e61fd8d2-77dc-42a8-a356-5537e74d8a87/resourceGroups/teamsprovisioning/providers/Microsoft.Web/sites/TyrensTeamsGovWebApi",
+		resourcePath,
 		"--metric",
 		"Http5xx,Requests,AverageResponseTime",
 		"--aggregation",
@@ -64,14 +73,12 @@ func GetMetrics() (*MetricsResult, error) {
 	execCmd := exec.Command(azureCLICommand[0], azureCLICommand[1:]...)
 	output, err := execCmd.CombinedOutput()
 	if err != nil {
-		fmt.Println("Error executing Azure CLI command:", err)
-		fmt.Println("Command output:", string(output))
+		return nil, fmt.Errorf("error executing Azure CLI command: %w (output: %s)", err, string(output))
 	}
 
-	results, errz := calculateMetrics(output)
-	if errz != nil {
-		fmt.Println(err)
-		return nil, errz
+	results, err := calculateMetrics(output)
+	if err != nil {
+		return nil, fmt.Errorf("failed to calculate metrics from output: %w", err)
 	}
 	return &results, nil
 }

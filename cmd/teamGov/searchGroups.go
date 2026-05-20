@@ -23,28 +23,28 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-				logger := logging.GetLogger()
+		logger := logging.GetLogger()
 		if cmd.Flags().Changed("searchText") {
 			body, err := teamGovHttp.Get("GetGroups", map[string]string{"searchText": searchString})
 			if err != nil {
-			logger.WithFields(log.Fields{
-				"url":    "/api/teams/GetGroups",
-				"method": "POST",
-				"status": "Error",
-			}).Error(err)
+				logger.WithFields(log.Fields{
+					"url":    "/api/teams/GetGroups",
+					"method": "POST",
+					"status": "Error",
+				}).Error(err)
 				return
 			}
 			groups, err := teamGovHttp.UnmarshalGroups(&body)
 			if err != nil {
 				logger.WithFields(log.Fields{
-				"url":    "/api/teams/GetGroups",
-				"method": "POST",
-				"status": "Error",
-			}).Error(err)
+					"url":    "/api/teams/GetGroups",
+					"method": "POST",
+					"status": "Error",
+				}).Error(err)
 				return
 			}
-			
-      ViewTable(&groups)
+
+			ViewTable(&groups)
 		}
 	},
 }
@@ -54,7 +54,6 @@ func init() {
 	TeamGovCmd.AddCommand(searchGroupsCmd)
 
 }
-
 
 // func RenderGroups(groups []teamGovHttp.UnifiedGroup) {
 // 	table := tablewriter.NewWriter(os.Stdout)

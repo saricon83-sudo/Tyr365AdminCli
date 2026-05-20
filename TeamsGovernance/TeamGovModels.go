@@ -81,7 +81,7 @@ type ManagedTeam struct {
 }
 type ManagedTeamSlice []ManagedTeam
 
-func(m *ManagedTeamSlice) PrintTable() {
+func (m *ManagedTeamSlice) PrintTable() {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"GroupId", "TeamName", "Status", "Origin", "Retention"}) // Customize the table header as needed
 
@@ -106,7 +106,6 @@ func(m *ManagedTeamSlice) PrintTable() {
 type TokenCached struct {
 	Token string
 }
-
 
 func (u *UnifiedGroupSlice) PrintTable() {
 	table := tablewriter.NewWriter(os.Stdout)

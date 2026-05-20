@@ -12,9 +12,9 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/olekukonko/tablewriter"
 	"github.com/saricon83-sudo/Tyr365AdminCli/internal/auth"
 	"github.com/saricon83-sudo/Tyr365AdminCli/internal/config"
-	"github.com/olekukonko/tablewriter"
 )
 
 // AuthArchiverApi gets an authentication token for the Archiver API.
@@ -32,27 +32,27 @@ type CustomTime struct {
 func (ct *CustomTime) UnmarshalJSON(data []byte) error {
 	// Remove quotes from the JSON string
 	str := string(data[1 : len(data)-1])
-	
+
 	// Try different formats that the API might use
 	formats := []string{
-		"2006-01-02T15:04:05.999",     // With milliseconds
-		"2006-01-02T15:04:05.99",      // With 2-digit milliseconds  
-		"2006-01-02T15:04:05.9",       // With 1-digit milliseconds
-		"2006-01-02T15:04:05",         // Without milliseconds
-		"2006-01-02T15:04:05Z",        // With Z timezone
-		"2006-01-02",                  // Date only (YYYY-MM-DD)
-		time.RFC3339,                  // Standard RFC3339
-		time.RFC3339Nano,              // RFC3339 with nanoseconds
-		time.DateOnly,                 // Go 1.20+ date only format
+		"2006-01-02T15:04:05.999", // With milliseconds
+		"2006-01-02T15:04:05.99",  // With 2-digit milliseconds
+		"2006-01-02T15:04:05.9",   // With 1-digit milliseconds
+		"2006-01-02T15:04:05",     // Without milliseconds
+		"2006-01-02T15:04:05Z",    // With Z timezone
+		"2006-01-02",              // Date only (YYYY-MM-DD)
+		time.RFC3339,              // Standard RFC3339
+		time.RFC3339Nano,          // RFC3339 with nanoseconds
+		time.DateOnly,             // Go 1.20+ date only format
 	}
-	
+
 	for _, format := range formats {
 		if t, err := time.Parse(format, str); err == nil {
 			ct.Time = t
 			return nil
 		}
 	}
-	
+
 	return fmt.Errorf("unable to parse time: %s", str)
 }
 
@@ -65,27 +65,27 @@ func (ct CustomTime) MarshalJSON() ([]byte, error) {
 
 // ArchiveJob represents an archive job
 type ArchiveJob struct {
-	ID                           int             `json:"id"`
-	IDExportDataJobs             int             `json:"idExportDataJobs"`
-	FilePath                     string          `json:"filePath"`
-	GroupID                      string          `json:"groupId"`
-	Status                       *string         `json:"status"`
-	SharePointURL                *string         `json:"sharePointUrl"`
-	Created                      *CustomTime     `json:"created"`
-	Alias                        string          `json:"alias"`
-	ArchiveSubJobs               []ArchiveSubJob `json:"archiveSubJobs"`
-	IDExportDataJobsNavigation   interface{}     `json:"idExportDataJobsNavigation"`
+	ID                         int             `json:"id"`
+	IDExportDataJobs           int             `json:"idExportDataJobs"`
+	FilePath                   string          `json:"filePath"`
+	GroupID                    string          `json:"groupId"`
+	Status                     *string         `json:"status"`
+	SharePointURL              *string         `json:"sharePointUrl"`
+	Created                    *CustomTime     `json:"created"`
+	Alias                      string          `json:"alias"`
+	ArchiveSubJobs             []ArchiveSubJob `json:"archiveSubJobs"`
+	IDExportDataJobsNavigation interface{}     `json:"idExportDataJobsNavigation"`
 }
 
 // ArchiveSubJob represents a sub-job within an archive job
 type ArchiveSubJob struct {
-	ID                         int         `json:"id"`
-	IDArchiveJobs              int         `json:"idArchiveJobs"`
-	Type                       string      `json:"type"`
-	Status                     *string     `json:"status"`
-	GroupID                    *string     `json:"groupId"`
-	Created                    *CustomTime `json:"created"`
-	IDArchiveJobsNavigation    *ArchiveJob `json:"idArchiveJobsNavigation"`
+	ID                      int         `json:"id"`
+	IDArchiveJobs           int         `json:"idArchiveJobs"`
+	Type                    string      `json:"type"`
+	Status                  *string     `json:"status"`
+	GroupID                 *string     `json:"groupId"`
+	Created                 *CustomTime `json:"created"`
+	IDArchiveJobsNavigation *ArchiveJob `json:"idArchiveJobsNavigation"`
 }
 
 // ExportDataJob represents an export data job
@@ -103,27 +103,27 @@ type ExportDataJob struct {
 
 // Request represents a request
 type Request struct {
-	ID                int           `json:"id"`
-	Created           CustomTime    `json:"created"`
-	GroupID           *string       `json:"groupId"`
-	TeamName          *string       `json:"teamName"`
-	Endpoint          *string       `json:"endpoint"`
-	CallerID          *string       `json:"callerId"`
-	Parameters        *string       `json:"parameters"`
-	Status            *string       `json:"status"`
-	ProvisioningStep  *string       `json:"provisioningStep"`
-	Message           *string       `json:"message"`
-	InitiatedBy       *string       `json:"initiatedBy"`
-	Modified          *CustomTime   `json:"modified"`
-	RowVersion        []byte        `json:"rowVersion"`
-	ClientTaskID      *int          `json:"clientTaskId"`
-	LTPMessageSent    *bool         `json:"ltpmessageSent"`
-	Hidden            *bool         `json:"hidden"`
-	GroupInformation  *string       `json:"groupInformation"`
-	RetryCount        *int          `json:"retryCount"`
-	QueuePriority     *int          `json:"queuePriority"`
-	ExportDataJobs    []ExportDataJob `json:"exportDataJobs"`
-	RequestSteps      []RequestStep   `json:"requestSteps"`
+	ID               int             `json:"id"`
+	Created          CustomTime      `json:"created"`
+	GroupID          *string         `json:"groupId"`
+	TeamName         *string         `json:"teamName"`
+	Endpoint         *string         `json:"endpoint"`
+	CallerID         *string         `json:"callerId"`
+	Parameters       *string         `json:"parameters"`
+	Status           *string         `json:"status"`
+	ProvisioningStep *string         `json:"provisioningStep"`
+	Message          *string         `json:"message"`
+	InitiatedBy      *string         `json:"initiatedBy"`
+	Modified         *CustomTime     `json:"modified"`
+	RowVersion       []byte          `json:"rowVersion"`
+	ClientTaskID     *int            `json:"clientTaskId"`
+	LTPMessageSent   *bool           `json:"ltpmessageSent"`
+	Hidden           *bool           `json:"hidden"`
+	GroupInformation *string         `json:"groupInformation"`
+	RetryCount       *int            `json:"retryCount"`
+	QueuePriority    *int            `json:"queuePriority"`
+	ExportDataJobs   []ExportDataJob `json:"exportDataJobs"`
+	RequestSteps     []RequestStep   `json:"requestSteps"`
 }
 
 // RequestStep represents a step in a request
@@ -157,12 +157,12 @@ type ArchiverClient struct {
 // NewArchiverClient creates a new archiver client
 func NewArchiverClient() (*ArchiverClient, error) {
 	cfg := config.Get()
-	
+
 	baseURL := cfg.GetString("archiverAddress")
 	if baseURL == "" {
 		return nil, errors.New("archiverAddress not found in configuration")
 	}
-    fmt.Printf("Debug: Archiver base URL: %s\n", baseURL) // Debug print
+	fmt.Printf("Debug: Archiver base URL: %s\n", baseURL) // Debug print
 	return &ArchiverClient{
 		baseURL: baseURL,
 	}, nil
@@ -303,7 +303,7 @@ func (c *ArchiverClient) CreateArchiveJobbet(archiveJob ArchiveJob) ([]byte, err
 	if err != nil {
 		return nil, fmt.Errorf("error marshalling archive job: %w", err)
 	}
-	
+
 	return c.makeAuthenticatedRequest("POST", "/api/Archiver/CreateArchiveJobbet", bytes.NewBuffer(jsonBody), nil)
 }
 
@@ -534,12 +534,12 @@ func (a *ArchiveJobSlice) PrintTable() {
 		if job.Status != nil {
 			status = *job.Status
 		}
-		
+
 		sharePointURL := ""
 		if job.SharePointURL != nil {
 			sharePointURL = *job.SharePointURL
 		}
-		
+
 		created := ""
 		if job.Created != nil {
 			created = job.Created.Time.Format("2006-01-02 15:04:05")
@@ -571,12 +571,12 @@ func (a *ArchiveSubJobSlice) PrintTable() {
 		if subJob.Status != nil {
 			status = *subJob.Status
 		}
-		
+
 		groupID := ""
 		if subJob.GroupID != nil {
 			groupID = *subJob.GroupID
 		}
-		
+
 		created := ""
 		if subJob.Created != nil {
 			created = subJob.Created.Time.Format("2006-01-02 15:04:05")
@@ -628,27 +628,27 @@ func (r *RequestSlice) PrintTable() {
 		if req.GroupID != nil {
 			groupID = *req.GroupID
 		}
-		
+
 		teamName := ""
 		if req.TeamName != nil {
 			teamName = *req.TeamName
 		}
-		
+
 		status := ""
 		if req.Status != nil {
 			status = *req.Status
 		}
-		
+
 		message := ""
 		if req.Message != nil {
 			message = *req.Message
 		}
-		
+
 		initiatedBy := ""
 		if req.InitiatedBy != nil {
 			initiatedBy = *req.InitiatedBy
 		}
-		
+
 		retryCount := ""
 		if req.RetryCount != nil {
 			retryCount = fmt.Sprintf("%d", *req.RetryCount)
@@ -681,17 +681,17 @@ func (r *RequestStepSlice) PrintTable() {
 		if step.Step != nil {
 			stepName = *step.Step
 		}
-		
+
 		status := ""
 		if step.Status != nil {
 			status = *step.Status
 		}
-		
+
 		message := ""
 		if step.Message != nil {
 			message = *step.Message
 		}
-		
+
 		modified := ""
 		if step.Modified != nil {
 			modified = step.Modified.Time.Format("2006-01-02 15:04:05")

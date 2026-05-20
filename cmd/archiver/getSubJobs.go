@@ -20,12 +20,12 @@ Example usage:
   getSubJobs --status processing`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("getSubJobs called")
-		
+
 		status, _ := cmd.Flags().GetString("status")
 		if status == "" {
 			status = "processing" // default status
 		}
-		
+
 		client, err := archiver.NewArchiverClient()
 		if err != nil {
 			fmt.Println("Error creating Archiver client:", err)
@@ -40,7 +40,7 @@ Example usage:
 		}
 
 		fmt.Printf("Found %d sub jobs with status '%s'\n", len(subJobs), status)
-		
+
 		if len(subJobs) == 0 {
 			fmt.Println("No sub jobs found with that status")
 			return
@@ -59,7 +59,7 @@ Example usage:
 
 func init() {
 	ArchiverCmd.AddCommand(GetSubJobsCmd)
-	
+
 	// Add flags
 	GetSubJobsCmd.Flags().StringP("status", "s", "processing", "Status to filter by (e.g., processing, completed, failed)")
 }

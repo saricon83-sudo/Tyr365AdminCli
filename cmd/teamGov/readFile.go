@@ -36,7 +36,7 @@ to quickly create a Cobra application.`,
 
 		var readGroups interface{}
 		saveToFile.ReadDataFromJSONFile(fileName, &readGroups)
-    
+
 		if cmd.Flag("testPrint").Changed {
 			outData, _ := json.Marshal(readGroups)
 			fmt.Println(string(outData))
@@ -45,32 +45,32 @@ to quickly create a Cobra application.`,
 			updateContenTypes(readGroups)
 		}
 		if cmd.Flag("getSharePointUrls").Changed {
-		unifiedGroups, err :=	GetUnifiedGroupsFromRequests(readGroups)
-		if err != nil{
-			fmt.Print("FML")
-		}
-	   saveToFile.SaveDataToJSONFile(unifiedGroups, "requestToUnifiedgroup.json")
+			unifiedGroups, err := GetUnifiedGroupsFromRequests(readGroups)
+			if err != nil {
+				fmt.Print("FML")
+			}
+			saveToFile.SaveDataToJSONFile(unifiedGroups, "requestToUnifiedgroup.json")
 		}
 		if cmd.Flag("removeRetention").Changed {
-        removeRetention(readGroups)
+			removeRetention(readGroups)
 		}
 		if cmd.Flag("removeRetentionValuesOnArchive").Changed {
-        RemoveRetentionValuesOnArchive(readGroups)
+			RemoveRetentionValuesOnArchive(readGroups)
 		}
-				if cmd.Flag("clearVersionHistoryOnSite").Changed {
-       ClearVersionHistoryOnSite(readGroups)
+		if cmd.Flag("clearVersionHistoryOnSite").Changed {
+			ClearVersionHistoryOnSite(readGroups)
 		}
 	},
 }
 
 func init() {
-		readFileCmd.Flags().Bool("testPrint", false, "Ensure file can be read")
+	readFileCmd.Flags().Bool("testPrint", false, "Ensure file can be read")
 	readFileCmd.Flags().StringVarP(&fileName, "file", "f", "", "The name of the file you want to read from")
 	readFileCmd.Flags().Bool("updateCT", false, "Call updateCTs in TeamGOv API")
-		readFileCmd.Flags().Bool("getSharePointUrls", false, "Gets unifiedGroups model from requests objects")
-		readFileCmd.Flags().Bool("clearVersionHistoryOnSite", false, "clearVersionHistoryOnSite")
-		readFileCmd.Flags().Bool("removeRetentionValuesOnArchive", false, "Sets the retention Propertybag and extensionvalues to archived")
-		readFileCmd.Flags().Bool("removeRetention", false, "Calls Exhange powershell (IPPS Session) to remove retention")
+	readFileCmd.Flags().Bool("getSharePointUrls", false, "Gets unifiedGroups model from requests objects")
+	readFileCmd.Flags().Bool("clearVersionHistoryOnSite", false, "clearVersionHistoryOnSite")
+	readFileCmd.Flags().Bool("removeRetentionValuesOnArchive", false, "Sets the retention Propertybag and extensionvalues to archived")
+	readFileCmd.Flags().Bool("removeRetention", false, "Calls Exhange powershell (IPPS Session) to remove retention")
 
 	TeamGovCmd.AddCommand(readFileCmd)
 }
@@ -132,12 +132,11 @@ func ClearVersionHistoryOnSite(readGroups interface{}) {
 	outData, _ := json.Marshal(readGroups)
 	requests, err := teamGovHttp.UnmarshalRequests(&outData)
 	if err != nil {
-						logger.WithFields(log.Fields{
-				"url":    "/api/teams/ReadFile/UpdateContentTypes",
-				"method": "GET",
-				"status": "Error",
-	
-			}).Error(err)
+		logger.WithFields(log.Fields{
+			"url":    "/api/teams/ReadFile/UpdateContentTypes",
+			"method": "GET",
+			"status": "Error",
+		}).Error(err)
 		return
 	}
 
@@ -160,21 +159,20 @@ func ClearVersionHistoryOnSite(readGroups interface{}) {
 
 			if err != nil {
 				logger.WithFields(log.Fields{
-				"url":    "/api/teams/ReadFile/ClearVersionHistoryOnSite",
-				"method": "GET",
-				"status": "Error",
-	"queryParams": queryParams,
-			}).Error(err)
+					"url":         "/api/teams/ReadFile/ClearVersionHistoryOnSite",
+					"method":      "GET",
+					"status":      "Error",
+					"queryParams": queryParams,
+				}).Error(err)
 				return
 			}
 
-				logger.WithFields(log.Fields{
-				"url":    "/api/teams/ReadFile/ClearVersionHistoryOnSite",
-				"method": "GET",
-				"status": "Success",
-	"queryParams": queryParams,
+			logger.WithFields(log.Fields{
+				"url":         "/api/teams/ReadFile/ClearVersionHistoryOnSite",
+				"method":      "GET",
+				"status":      "Success",
+				"queryParams": queryParams,
 			}).Infof("Successfully processed group %s\n", group.GroupID)
-
 
 		}(group)
 	}
@@ -189,12 +187,11 @@ func updateContenTypes(readGroups interface{}) {
 	outData, _ := json.Marshal(readGroups)
 	requests, err := teamGovHttp.UnmarshalRequests(&outData)
 	if err != nil {
-						logger.WithFields(log.Fields{
-				"url":    "/api/teams/ReadFile/UpdateContentTypes",
-				"method": "GET",
-				"status": "Error",
-	
-			}).Error(err)
+		logger.WithFields(log.Fields{
+			"url":    "/api/teams/ReadFile/UpdateContentTypes",
+			"method": "GET",
+			"status": "Error",
+		}).Error(err)
 		return
 	}
 
@@ -217,21 +214,20 @@ func updateContenTypes(readGroups interface{}) {
 
 			if err != nil {
 				logger.WithFields(log.Fields{
-				"url":    "/api/teams/ReadFile/SetContentTypesToEditOnSite",
-				"method": "GET",
-				"status": "Error",
-	"queryParams": queryParams,
-			}).Error(err)
+					"url":         "/api/teams/ReadFile/SetContentTypesToEditOnSite",
+					"method":      "GET",
+					"status":      "Error",
+					"queryParams": queryParams,
+				}).Error(err)
 				return
 			}
 
-				logger.WithFields(log.Fields{
-				"url":    "/api/teams/ReadFile/SetContentTypesToEditOnSite",
-				"method": "GET",
-				"status": "Success",
-	"queryParams": queryParams,
+			logger.WithFields(log.Fields{
+				"url":         "/api/teams/ReadFile/SetContentTypesToEditOnSite",
+				"method":      "GET",
+				"status":      "Success",
+				"queryParams": queryParams,
 			}).Infof("Successfully processed group %s\n", group.GroupID)
-
 
 		}(group)
 	}
@@ -246,12 +242,11 @@ func RemoveRetentionValuesOnArchive(readGroups interface{}) {
 	outData, _ := json.Marshal(readGroups)
 	groups, err := teamGovHttp.UnmarshalGroups(&outData)
 	if err != nil {
-						logger.WithFields(log.Fields{
-				"url":    "/api/teams/ReadFile/UpdateContentTypes",
-				"method": "GET",
-				"status": "Error",
-	
-			}).Error(err)
+		logger.WithFields(log.Fields{
+			"url":    "/api/teams/ReadFile/UpdateContentTypes",
+			"method": "GET",
+			"status": "Error",
+		}).Error(err)
 		return
 	}
 
@@ -275,21 +270,20 @@ func RemoveRetentionValuesOnArchive(readGroups interface{}) {
 
 			if err != nil {
 				logger.WithFields(log.Fields{
-				"url":    "/api/teams/ReadFile/RemoveRetentionValuesOnArchive",
-				"method": "GET",
-				"status": "Error",
-	"queryParams": queryParams,
-			}).Error(err)
+					"url":         "/api/teams/ReadFile/RemoveRetentionValuesOnArchive",
+					"method":      "GET",
+					"status":      "Error",
+					"queryParams": queryParams,
+				}).Error(err)
 				return
 			}
 
-				logger.WithFields(log.Fields{
-				"url":    "/api/teams/ReadFile/RemoveRetentionValuesOnArchive",
-				"method": "GET",
-				"status": "Success",
-	"queryParams": queryParams,
+			logger.WithFields(log.Fields{
+				"url":         "/api/teams/ReadFile/RemoveRetentionValuesOnArchive",
+				"method":      "GET",
+				"status":      "Success",
+				"queryParams": queryParams,
 			}).Infof("Successfully processed group %s\n", group.DisplayName)
-
 
 		}(group)
 	}
@@ -309,7 +303,7 @@ func GetUnifiedGroupsFromRequests(readGroups interface{}) (teamGovHttp.UnifiedGr
 	}
 
 	// Unmarshal JSON into your request struct
-	requests, err := teamGovHttp.UnmarshalRequests(&outData)  // Ensure correct data handling
+	requests, err := teamGovHttp.UnmarshalRequests(&outData) // Ensure correct data handling
 	if err != nil {
 		logger.Panic("Could not unmarshal requests json, exiting program")
 	}
@@ -354,14 +348,14 @@ func GetUnifiedGroupsFromRequests(readGroups interface{}) (teamGovHttp.UnifiedGr
 				}).Error("Failed to unmarshal group data")
 				return
 			}
-      logger.WithFields(log.Fields{
-					"url":          "/api/teams/ReadFile/GetGroup",
-					"method":       "GET",
-					"status":       "Success",
-					"queryParams":  queryParams,
-					"group": m365Group.DisplayName,
-				}).Infof("Retrivered Unified group with id: %s", m365Group.GroupId)
-      time.Sleep(5 * time.Second)
+			logger.WithFields(log.Fields{
+				"url":         "/api/teams/ReadFile/GetGroup",
+				"method":      "GET",
+				"status":      "Success",
+				"queryParams": queryParams,
+				"group":       m365Group.DisplayName,
+			}).Infof("Retrivered Unified group with id: %s", m365Group.GroupId)
+			time.Sleep(5 * time.Second)
 
 			// Aggregate the result into the slice
 			mutex.Lock()
@@ -375,7 +369,3 @@ func GetUnifiedGroupsFromRequests(readGroups interface{}) (teamGovHttp.UnifiedGr
 
 	return unifiedGroups, nil // Return the collected results
 }
-
-
-	
-

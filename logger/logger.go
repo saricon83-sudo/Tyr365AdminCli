@@ -13,9 +13,9 @@ func SetupLogging(logFile string, useJSON bool) {
 		logger.Formatter = &logrus.JSONFormatter{}
 	} else {
 		logger.Formatter = &logrus.TextFormatter{
-                ForceColors:   true, // Force enabling colors even if non-tty output is detected
-        FullTimestamp: true, // Show full timestamp
-        }
+			ForceColors:   true, // Force enabling colors even if non-tty output is detected
+			FullTimestamp: true, // Show full timestamp
+		}
 	}
 	logger.SetLevel(logrus.InfoLevel)
 

@@ -106,14 +106,14 @@ var queryCmd = &cobra.Command{
 			err := saveToFile.SaveDataToJSONFile(&requests, fileName+".json")
 			if err != nil {
 				logger.WithFields(log.Fields{
-				"url":    "/api/teams/CliQuery",
-				"method": "GET",
-				"status": "Error",
-				"query":  queryParams,
-			}).Error(err)
+					"url":    "/api/teams/CliQuery",
+					"method": "GET",
+					"status": "Error",
+					"query":  queryParams,
+				}).Error(err)
 				return
 			}
-				logger.WithFields(log.Fields{
+			logger.WithFields(log.Fields{
 				"url":    "/api/teams/CliQuery",
 				"method": "GET",
 				"status": "Succeeded",
@@ -126,7 +126,7 @@ var queryCmd = &cobra.Command{
 
 		}
 		if err != nil {
-				logger.WithFields(log.Fields{
+			logger.WithFields(log.Fields{
 				"url":    "/api/teams/CliQuery",
 				"method": "GET",
 				"status": "Error",
@@ -201,11 +201,10 @@ func worker(wg *sync.WaitGroup, templateID int, requestsChan <-chan teamGovHttp.
 	for req := range requestsChan {
 		var params teamGovHttp.Parameters
 		if err := json.Unmarshal([]byte(req.Parameters), &params); err != nil {
-				logger.WithFields(log.Fields{
+			logger.WithFields(log.Fields{
 				"url":    "/api/teams/CliQuery",
 				"method": "GET",
 				"status": "Error",
-			
 			}).Error("Error unmarshaling Parameters for request ID %d: %v\n", req.ID, err)
 			continue
 		}

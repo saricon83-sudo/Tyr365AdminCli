@@ -10,7 +10,9 @@ import (
 	teamGovHttp "github.com/saricon83-sudo/Tyr365AdminCli/TeamsGovernance"
 	"github.com/spf13/cobra"
 )
+
 var toolId string
+
 // getToolByIdCmd represents the getToolById command
 var getToolByIdCmd = &cobra.Command{
 	Use:   "getToolById",

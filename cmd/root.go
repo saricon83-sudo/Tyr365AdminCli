@@ -15,6 +15,7 @@ import (
 	"github.com/saricon83-sudo/Tyr365AdminCli/cmd/teamGov"
 	teamToolboxCmd "github.com/saricon83-sudo/Tyr365AdminCli/cmd/teamToolbox"
 
+	"github.com/saricon83-sudo/Tyr365AdminCli/internal/config"
 	logging "github.com/saricon83-sudo/Tyr365AdminCli/logger"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -89,6 +90,10 @@ func initConfig() {
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
+		// Load into unified configuration singleton as well
+		if err := config.LoadCustomConfig(cfgFile); err != nil {
+			fmt.Fprintf(os.Stderr, "Warning: failed to load custom config into system: %v\n", err)
+		}
 	} else {
 		// Find home directory.
 		home, err := os.UserHomeDir()

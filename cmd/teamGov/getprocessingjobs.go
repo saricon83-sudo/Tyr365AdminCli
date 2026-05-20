@@ -56,11 +56,9 @@ var getprocessingjobsCmd = &cobra.Command{
 
 func init() {
 
-
 	getprocessingjobsCmd.Flags().Bool("showData", false, "Prints the table")
 	TeamGovCmd.AddCommand(readFileCmd)
 
 	TeamGovCmd.AddCommand(getprocessingjobsCmd)
 
 }
-

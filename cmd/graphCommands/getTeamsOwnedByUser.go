@@ -8,22 +8,22 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/olekukonko/tablewriter"
 	saveToFile "github.com/saricon83-sudo/Tyr365AdminCli/SaveToFile"
 	logging "github.com/saricon83-sudo/Tyr365AdminCli/logger"
-	"github.com/olekukonko/tablewriter"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
 // OwnedTeam represents a Team where the user is an owner
 type OwnedTeam struct {
-	GroupId      string `json:"groupId"`
-	DisplayName  string `json:"displayName"`
-	Description  string `json:"description"`
-	Mail         string `json:"mail"`
-	Visibility   string `json:"visibility"`
-	CreatedDate  string `json:"createdDate"`
-	IsArchived   bool   `json:"isArchived"`
+	GroupId     string `json:"groupId"`
+	DisplayName string `json:"displayName"`
+	Description string `json:"description"`
+	Mail        string `json:"mail"`
+	Visibility  string `json:"visibility"`
+	CreatedDate string `json:"createdDate"`
+	IsArchived  bool   `json:"isArchived"`
 }
 
 type OwnedTeamSlice []OwnedTeam
@@ -157,7 +157,7 @@ func init() {
 	getTeamsOwnedByUserCmd.Flags().Bool("json", false, "Export results to JSON file")
 	getTeamsOwnedByUserCmd.Flags().Bool("excel", false, "Export results to Excel file")
 	getTeamsOwnedByUserCmd.Flags().Bool("csv", false, "Export results to CSV file")
-	
+
 	if err := getTeamsOwnedByUserCmd.MarkFlagRequired("user"); err != nil {
 		fmt.Println(err)
 	}

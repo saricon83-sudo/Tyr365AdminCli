@@ -9,12 +9,12 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/saricon83-sudo/Tyr365AdminCli/internal/auth"
-	"github.com/saricon83-sudo/Tyr365AdminCli/internal/config"
 	"github.com/google/uuid"
 	bmodels "github.com/microsoftgraph/msgraph-beta-sdk-go/models"
 	models "github.com/microsoftgraph/msgraph-sdk-go/models"
 	"github.com/microsoftgraph/msgraph-sdk-go/users"
+	"github.com/saricon83-sudo/Tyr365AdminCli/internal/auth"
+	"github.com/saricon83-sudo/Tyr365AdminCli/internal/config"
 )
 
 type NewAssignment struct {
@@ -273,40 +273,58 @@ func createPlannerTask(taskPayload []byte, accessToken string) (string, error) {
 }
 
 func (g *GraphHelper) GetTeamById(teamId string) (models.Teamable, error) {
-	team, nil := g.appClient.Teams().ByTeamId(teamId).Get(context.Background(), nil)
+	team, err := g.appClient.Teams().ByTeamId(teamId).Get(context.Background(), nil)
+	if err != nil {
+		return nil, err
+	}
 	return team, nil
 }
 
 func (g *GraphHelper) GetAllChannels(teamId string) (models.ChannelCollectionResponseable, error) {
-	channels, nil := g.appClient.Teams().ByTeamId(teamId).AllChannels().Get(context.Background(), nil)
+	channels, err := g.appClient.Teams().ByTeamId(teamId).AllChannels().Get(context.Background(), nil)
+	if err != nil {
+		return nil, err
+	}
 	return channels, nil
 }
 
 func (g *GraphHelper) GetChannelById(teamId string, channelId string) (models.Channelable, error) {
-	channel, nil := g.appClient.Teams().ByTeamId(teamId).Channels().ByChannelId(channelId).Get(context.Background(), nil)
+	channel, err := g.appClient.Teams().ByTeamId(teamId).Channels().ByChannelId(channelId).Get(context.Background(), nil)
+	if err != nil {
+		return nil, err
+	}
 	return channel, nil
 }
 
 func (g *GraphHelper) EnsureFilesFolder(teamId string, channelId string) (models.DriveItemable, error) {
-	drive, nil := g.appClient.Teams().ByTeamId(teamId).Channels().ByChannelId(channelId).FilesFolder().Get(context.Background(), nil)
+	drive, err := g.appClient.Teams().ByTeamId(teamId).Channels().ByChannelId(channelId).FilesFolder().Get(context.Background(), nil)
+	if err != nil {
+		return nil, err
+	}
 	return drive, nil
 }
 func (g *GraphHelper) EnsureOneNote(teamId string, channelId string) (models.NotebookCollectionResponseable, error) {
-	Onenote, nil := g.appClient.Groups().ByGroupId(teamId).Onenote().Notebooks().Get(context.Background(), nil)
+	Onenote, err := g.appClient.Groups().ByGroupId(teamId).Onenote().Notebooks().Get(context.Background(), nil)
+	if err != nil {
+		return nil, err
+	}
 	return Onenote, nil
 }
 func (g *GraphHelper) GetTabs(teamId string, channelId string) (models.TeamsTabCollectionResponseable, error) {
-	teamTabs, nil := g.appClient.Teams().ByTeamId(teamId).Channels().ByChannelId(channelId).Tabs().Get(context.Background(), nil)
+	teamTabs, err := g.appClient.Teams().ByTeamId(teamId).Channels().ByChannelId(channelId).Tabs().Get(context.Background(), nil)
+	if err != nil {
+		return nil, err
+	}
 	return teamTabs, nil
 }
 
-func (g *GraphHelper) GetTeamsInstalledApps (teamId string) (models.TeamsAppInstallationCollectionResponseable, error){
- installedApps, err := g.appClient.Teams().ByTeamId(teamId).InstalledApps().Get(context.Background(), nil)
- if err != nil {
-  return nil, err
- }
+func (g *GraphHelper) GetTeamsInstalledApps(teamId string) (models.TeamsAppInstallationCollectionResponseable, error) {
+	installedApps, err := g.appClient.Teams().ByTeamId(teamId).InstalledApps().Get(context.Background(), nil)
+	if err != nil {
+		return nil, err
+	}
 
- return installedApps, nil
+	return installedApps, nil
 }
 
 func UpdateTaskWithChecklistItems(taskID, checklistStr string) error {
@@ -316,7 +334,7 @@ func UpdateTaskWithChecklistItems(taskID, checklistStr string) error {
 	// Initialize the checklist map
 	checklist := make(map[string]interface{})
 	for _, title := range titles {
-			checklistItemId := uuid.New().String()
+		checklistItemId := uuid.New().String()
 		checklist[checklistItemId] = ChecklistItem{
 			ODataType: "microsoft.graph.plannerChecklistItem",
 			Title:     strings.TrimSpace(title),

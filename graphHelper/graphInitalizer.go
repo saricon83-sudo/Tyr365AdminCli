@@ -5,9 +5,9 @@ import (
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
-	"github.com/saricon83-sudo/Tyr365AdminCli/internal/config"
 	auth "github.com/microsoft/kiota-authentication-azure-go"
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
+	"github.com/saricon83-sudo/Tyr365AdminCli/internal/config"
 
 	graphbeta "github.com/microsoftgraph/msgraph-beta-sdk-go"
 )

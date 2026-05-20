@@ -23,7 +23,7 @@ var retryRequestCmd = &cobra.Command{
 		}
 		body, err := teamGovHttp.Post("RetryRequest", map[string]string{"requestId": fmt.Sprintf("%d", requestId)})
 		if err != nil {
-		logger.WithFields(log.Fields{
+			logger.WithFields(log.Fields{
 				"url":    "/api/teams/RetryRequest",
 				"method": "POST",
 				"status": "Error",

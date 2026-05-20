@@ -65,4 +65,3 @@ func (tp *TokenProvider) GetAuthenticatedClient() (*http.Client, error) {
 	client := config.Client(ctx)
 	return client, nil
 }
-

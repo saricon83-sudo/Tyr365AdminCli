@@ -4,6 +4,9 @@ package config
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
 	"sync"
 
 	"github.com/spf13/viper"
@@ -18,7 +21,9 @@ var (
 // DefaultConfigPaths contains the default paths to search for config files
 var DefaultConfigPaths = []string{
 	"/root/condigurationFolder/",
+	"/root/configurationFolder/",
 	"~/condigurationFolder/",
+	"~/configurationFolder/",
 	".",
 }
 
@@ -31,6 +36,11 @@ func Initialize(configFileName string) error {
 		instance.SetConfigType("json")
 
 		for _, path := range DefaultConfigPaths {
+			if strings.HasPrefix(path, "~/") {
+				if home, err := os.UserHomeDir(); err == nil {
+					path = filepath.Join(home, path[2:])
+				}
+			}
 			instance.AddConfigPath(path)
 		}
 
@@ -41,6 +51,24 @@ func Initialize(configFileName string) error {
 	})
 
 	return initErr
+}
+
+// LoadCustomConfig loads a specific configuration file, overriding any previously loaded configuration.
+func LoadCustomConfig(filePath string) error {
+	if strings.HasPrefix(filePath, "~/") {
+		if home, err := os.UserHomeDir(); err == nil {
+			filePath = filepath.Join(home, filePath[2:])
+		}
+	}
+
+	if instance == nil {
+		instance = viper.New()
+	}
+	instance.SetConfigFile(filePath)
+	if err := instance.ReadInConfig(); err != nil {
+		return fmt.Errorf("failed to read custom config file %s: %w", filePath, err)
+	}
+	return nil
 }
 
 // Get returns the config singleton instance.
@@ -64,6 +92,7 @@ func MustGet() *viper.Viper {
 }
 
 // GetString is a convenience method to get a string value from config
+// Deprecated: Access via config.Get().GetString() is preferred, but kept for compatibility.
 func GetString(key string) string {
 	return Get().GetString(key)
 }
