@@ -205,7 +205,7 @@ func worker(wg *sync.WaitGroup, templateID int, requestsChan <-chan teamGovHttp.
 				"url":    "/api/teams/CliQuery",
 				"method": "GET",
 				"status": "Error",
-			}).Error("Error unmarshaling Parameters for request ID %d: %v\n", req.ID, err)
+			}).Errorf("Error unmarshaling Parameters for request ID %d: %v\n", req.ID, err)
 			continue
 		}
 

@@ -1,9 +1,9 @@
 package teamToolboxCmd
 
 import (
-	"fmt"
-
+	"github.com/pterm/pterm"
 	teamToolboxHelper "github.com/saricon83-sudo/Tyr365AdminCli/TeamToolBoxHelper"
+	"github.com/saricon83-sudo/Tyr365AdminCli/internal/output"
 	"github.com/spf13/cobra"
 )
 
@@ -14,19 +14,23 @@ var getErrors = &cobra.Command{
 	Short: "Get requests with status errors",
 	Long:  "Get requests from the Governance API that currently has the error status",
 	Run: func(cmd *cobra.Command, args []string) {
-
 		client, err := teamToolboxHelper.CreateAdminAPI()
-
 		if err != nil {
-			fmt.Println(err)
+			pterm.Error.Printf("Failed to connect to Admin API: %v\n", err)
+			return
 		}
+
+		spinner, _ := pterm.DefaultSpinner.Start("Fetching error requests...")
 		response, err := client.GetErrors(includeHidden)
-
 		if err != nil {
-			fmt.Println(err)
+			spinner.Fail(err.Error())
+			return
 		}
+		spinner.Success("Error requests loaded!")
 
-		teamToolboxHelper.PrintViewErrorRequestTable(response)
+		output.PrintResult(response, func() {
+			teamToolboxHelper.PrintViewErrorRequestTable(response)
+		})
 	},
 }
 

@@ -1,31 +1,34 @@
 package teamToolboxCmd
 
 import (
-	"fmt"
-
+	"github.com/pterm/pterm"
 	teamToolBoxHelper "github.com/saricon83-sudo/Tyr365AdminCli/TeamToolBoxHelper"
+	"github.com/saricon83-sudo/Tyr365AdminCli/internal/output"
 	"github.com/spf13/cobra"
 )
 
 var toolAdoption = &cobra.Command{
 	Use:   "toolAdoption",
 	Short: "Get tool adoption rates",
-	Long:  "Get the adoption rates of the tools available in the ToolBox",
+	Long:  "Get the adoption rates of all tools available in the Team Toolbox",
 	Run: func(cmd *cobra.Command, args []string) {
-
 		client, err := teamToolBoxHelper.CreateAdminAPI()
-
 		if err != nil {
-			fmt.Println(err)
+			pterm.Error.Printf("Failed to connect to Admin API: %v\n", err)
+			return
 		}
+
+		spinner, _ := pterm.DefaultSpinner.Start("Fetching tool adoption statistics...")
 		response, err := client.GetToolAdoption()
-
 		if err != nil {
-			fmt.Println(err)
+			spinner.Fail(err.Error())
+			return
 		}
+		spinner.Success("Tool adoption stats loaded!")
 
-		teamToolBoxHelper.PrintToolAdoptionStatsTable(response)
-
+		output.PrintResult(response, func() {
+			teamToolBoxHelper.PrintToolAdoptionStatsTable(response)
+		})
 	},
 }
 

@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
+	"strings"
 
 	"github.com/olekukonko/tablewriter"
 )
@@ -167,4 +169,252 @@ func MarshalToJSON(body interface{}) ([]byte, error) {
 		return nil, fmt.Errorf("error marshalling request body: %w", err)
 	}
 	return jsonBody, nil
+}
+
+// GetAllTblToolsForTeam calls GET /Tools/GetAllTblToolsForTeam?groupId={guid}
+func (client *APIClient) GetAllTblToolsForTeam(groupId string) ([]TblTool, error) {
+	httpClient, err := client.AuthProvider.GetAuthenticatedClient()
+	if err != nil {
+		return nil, err
+	}
+	address := fmt.Sprintf("%s/Tools/GetAllTblToolsForTeam?groupId=%s", client.BaseURL, url.QueryEscape(groupId))
+	resp, err := httpClient.Get(address)
+	if err != nil {
+		return nil, fmt.Errorf("unable to call Tools API: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("API error (status %d): %s", resp.StatusCode, string(body))
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("unable to read response: %w", err)
+	}
+
+	var tools []TblTool
+	if err := json.Unmarshal(body, &tools); err != nil {
+		return nil, fmt.Errorf("unable to parse response: %w", err)
+	}
+	return tools, nil
+}
+
+// UserIsOwnerInTeam calls GET /Tools/UserIsOwnerInTeam?groupId={guid}&userId={upn}
+func (client *APIClient) UserIsOwnerInTeam(groupId, userId string) (bool, error) {
+	httpClient, err := client.AuthProvider.GetAuthenticatedClient()
+	if err != nil {
+		return false, err
+	}
+	address := fmt.Sprintf("%s/Tools/UserIsOwnerInTeam?groupId=%s&userId=%s", client.BaseURL, url.QueryEscape(groupId), url.QueryEscape(userId))
+	resp, err := httpClient.Get(address)
+	if err != nil {
+		return false, fmt.Errorf("unable to call Tools API: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		body, _ := io.ReadAll(resp.Body)
+		return false, fmt.Errorf("API error (status %d): %s", resp.StatusCode, string(body))
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return false, fmt.Errorf("unable to read response: %w", err)
+	}
+
+	var isOwner bool
+	if err := json.Unmarshal(body, &isOwner); err != nil {
+		val := strings.ToLower(strings.TrimSpace(string(body)))
+		return val == "true", nil
+	}
+	return isOwner, nil
+}
+
+// AddRequestForTool calls POST /Tools/AddRequestForTool
+func (client *APIClient) AddRequestForTool(toolReq *TblToolRequest) (*TblToolRequest, error) {
+	jsonBody, err := json.Marshal(toolReq)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal body: %w", err)
+	}
+
+	httpClient, err := client.AuthProvider.GetAuthenticatedClient()
+	if err != nil {
+		return nil, err
+	}
+
+	address := fmt.Sprintf("%s/Tools/AddRequestForTool", client.BaseURL)
+	resp, err := httpClient.Post(address, "application/json", bytes.NewBuffer(jsonBody))
+	if err != nil {
+		return nil, fmt.Errorf("unable to call Tools API: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("API error (status %d): %s", resp.StatusCode, string(body))
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("unable to read response: %w", err)
+	}
+
+	var result TblToolRequest
+	if err := json.Unmarshal(body, &result); err != nil {
+		return nil, fmt.Errorf("unable to parse response: %w", err)
+	}
+	return &result, nil
+}
+
+// GetRequestById calls GET /Tools/GetRequestById?id={int}
+func (client *APIClient) GetRequestById(id int) (*TblToolRequest, error) {
+	httpClient, err := client.AuthProvider.GetAuthenticatedClient()
+	if err != nil {
+		return nil, err
+	}
+	address := fmt.Sprintf("%s/Tools/GetRequestById?id=%d", client.BaseURL, id)
+	resp, err := httpClient.Get(address)
+	if err != nil {
+		return nil, fmt.Errorf("unable to call Tools API: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("API error (status %d): %s", resp.StatusCode, string(body))
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("unable to read response: %w", err)
+	}
+
+	var toolReq TblToolRequest
+	if err := json.Unmarshal(body, &toolReq); err != nil {
+		return nil, fmt.Errorf("unable to parse response: %w", err)
+	}
+	return &toolReq, nil
+}
+
+// UpdateToolRequestStatus calls POST /Tools/UpdateToolRequestStatus
+func (client *APIClient) UpdateToolRequestStatus(id int, status string) (*MessageResponse, error) {
+	bodyData := map[string]interface{}{
+		"id":     id,
+		"status": status,
+	}
+	jsonBody, err := json.Marshal(bodyData)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal body: %w", err)
+	}
+
+	httpClient, err := client.AuthProvider.GetAuthenticatedClient()
+	if err != nil {
+		return nil, err
+	}
+
+	address := fmt.Sprintf("%s/Tools/UpdateToolRequestStatus", client.BaseURL)
+	resp, err := httpClient.Post(address, "application/json", bytes.NewBuffer(jsonBody))
+	if err != nil {
+		return nil, fmt.Errorf("unable to call Tools API: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("API error (status %d): %s", resp.StatusCode, string(body))
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("unable to read response: %w", err)
+	}
+
+	var msgResp MessageResponse
+	if err := json.Unmarshal(body, &msgResp); err != nil {
+		return &MessageResponse{Message: string(body)}, nil
+	}
+	return &msgResp, nil
+}
+
+// AddInstanceOfToolToDb calls POST /Tools/AddInstanceOfToolToDb
+func (client *APIClient) AddInstanceOfToolToDb(groupId string, toolId int) (*TblToolInstance, error) {
+	bodyData := map[string]interface{}{
+		"groupId": groupId,
+		"toolId":  toolId,
+	}
+	jsonBody, err := json.Marshal(bodyData)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal body: %w", err)
+	}
+
+	httpClient, err := client.AuthProvider.GetAuthenticatedClient()
+	if err != nil {
+		return nil, err
+	}
+
+	address := fmt.Sprintf("%s/Tools/AddInstanceOfToolToDb", client.BaseURL)
+	resp, err := httpClient.Post(address, "application/json", bytes.NewBuffer(jsonBody))
+	if err != nil {
+		return nil, fmt.Errorf("unable to call Tools API: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("API error (status %d): %s", resp.StatusCode, string(body))
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("unable to read response: %w", err)
+	}
+
+	var instance TblToolInstance
+	if err := json.Unmarshal(body, &instance); err != nil {
+		return nil, fmt.Errorf("unable to parse response: %w", err)
+	}
+	return &instance, nil
+}
+
+// LogMessage calls POST /Tools/LogMessage
+func (client *APIClient) LogMessage(subject, message, status string) (*LogEntry, error) {
+	entry := &LogEntry{
+		Subject: subject,
+		Message: message,
+		Status:  status,
+	}
+	jsonBody, err := json.Marshal(entry)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal body: %w", err)
+	}
+
+	httpClient, err := client.AuthProvider.GetAuthenticatedClient()
+	if err != nil {
+		return nil, err
+	}
+
+	address := fmt.Sprintf("%s/Tools/LogMessage", client.BaseURL)
+	resp, err := httpClient.Post(address, "application/json", bytes.NewBuffer(jsonBody))
+	if err != nil {
+		return nil, fmt.Errorf("unable to call Tools API: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("API error (status %d): %s", resp.StatusCode, string(body))
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("unable to read response: %w", err)
+	}
+
+	var result LogEntry
+	if err := json.Unmarshal(body, &result); err != nil {
+		return nil, fmt.Errorf("unable to parse response: %w", err)
+	}
+	return &result, nil
 }

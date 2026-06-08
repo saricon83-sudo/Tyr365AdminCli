@@ -1,6 +1,58 @@
 package teamToolboxHelper
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
+
+// CustomTime handles the API's custom datetime format
+type CustomTime struct {
+	time.Time
+}
+
+// UnmarshalJSON implements custom unmarshalling for the API's datetime format
+func (ct *CustomTime) UnmarshalJSON(data []byte) error {
+	if string(data) == "null" {
+		ct.Time = time.Time{}
+		return nil
+	}
+	if len(data) < 2 {
+		return fmt.Errorf("invalid time value: %s", string(data))
+	}
+	str := string(data[1 : len(data)-1])
+
+	// Try different formats that the API might use
+	formats := []string{
+		"2006-01-02T15:04:05.999999999",
+		"2006-01-02T15:04:05.999999",
+		"2006-01-02T15:04:05.999", // With milliseconds
+		"2006-01-02T15:04:05.99",  // With 2-digit milliseconds
+		"2006-01-02T15:04:05.9",   // With 1-digit milliseconds
+		"2006-01-02T15:04:05",     // Without milliseconds
+		"2006-01-02T15:04:05Z",    // With Z timezone
+		"2006-01-02",              // Date only (YYYY-MM-DD)
+		time.RFC3339,              // Standard RFC3339
+		time.RFC3339Nano,          // RFC3339 with nanoseconds
+		time.DateOnly,             // Go 1.20+ date only format
+	}
+
+	for _, format := range formats {
+		if t, err := time.Parse(format, str); err == nil {
+			ct.Time = t
+			return nil
+		}
+	}
+
+	return fmt.Errorf("unable to parse time: %s", str)
+}
+
+// MarshalJSON implements custom marshalling
+func (ct CustomTime) MarshalJSON() ([]byte, error) {
+	if ct.Time.IsZero() {
+		return []byte("null"), nil
+	}
+	return []byte(fmt.Sprintf("%q", ct.Time.Format("2006-01-02T15:04:05.999"))), nil
+}
 
 // ============================================================================
 // Dashboard & Statistics Models
@@ -41,12 +93,12 @@ type DailyRequestCount struct {
 
 // ToolAdoptionStats represents tool adoption statistics
 type ToolAdoptionStats struct {
-	ToolId        int       `json:"toolId"`
-	ToolName      string    `json:"toolName"`
-	InstanceCount int       `json:"instanceCount"`
-	UniqueTeams   int       `json:"uniqueTeams"`
-	FirstAdoption time.Time `json:"firstAdoption"`
-	LastAdoption  time.Time `json:"lastAdoption"`
+	ToolId        int        `json:"toolId"`
+	ToolName      string     `json:"toolName"`
+	InstanceCount int        `json:"instanceCount"`
+	UniqueTeams   int        `json:"uniqueTeams"`
+	FirstAdoption CustomTime `json:"firstAdoption"`
+	LastAdoption  CustomTime `json:"lastAdoption"`
 }
 
 // StorageReleasedPeriod represents storage released in a period
@@ -103,67 +155,67 @@ type Request struct {
 	Hidden         bool            `json:"hidden"`
 	Message        string          `json:"message"`
 	InitiatedBy    string          `json:"initiatedBy"`
-	Created        time.Time       `json:"created"`
-	Modified       time.Time       `json:"modified"`
+	Created        CustomTime      `json:"created"`
+	Modified       CustomTime      `json:"modified"`
 	RequestSteps   []RequestStep   `json:"requestSteps,omitempty"`
 	ExportDataJobs []ExportDataJob `json:"exportDataJobs,omitempty"`
 }
 
 // RequestStep represents a step in a request
 type RequestStep struct {
-	Id        int       `json:"id"`
-	RequestId int       `json:"requestId"`
-	Step      string    `json:"step"`
-	Status    string    `json:"status"`
-	Message   string    `json:"message"`
-	Created   time.Time `json:"created"`
+	Id        int        `json:"id"`
+	RequestId int        `json:"requestId"`
+	Step      string     `json:"step"`
+	Status    string     `json:"status"`
+	Message   string     `json:"message"`
+	Created   CustomTime `json:"created"`
 }
 
 // RequestDurationInfo represents request duration information
 type RequestDurationInfo struct {
-	RequestId       int       `json:"requestId"`
-	GroupId         string    `json:"groupId"`
-	Endpoint        string    `json:"endpoint"`
-	Status          string    `json:"status"`
-	DurationMinutes float64   `json:"durationMinutes"`
-	Created         time.Time `json:"created"`
-	Modified        time.Time `json:"modified"`
+	RequestId       int        `json:"requestId"`
+	GroupId         string     `json:"groupId"`
+	Endpoint        string     `json:"endpoint"`
+	Status          string     `json:"status"`
+	DurationMinutes float64    `json:"durationMinutes"`
+	Created         CustomTime `json:"created"`
+	Modified        CustomTime `json:"modified"`
 }
 
 // ViewErrorRequest represents an error request from the view
 type ViewErrorRequest struct {
-	Id          int       `json:"id"`
-	GroupId     string    `json:"groupId"`
-	Endpoint    string    `json:"endpoint"`
-	Status      string    `json:"status"`
-	Message     string    `json:"message"`
-	RetryCount  int       `json:"retryCount"`
-	Hidden      bool      `json:"hidden"`
-	InitiatedBy string    `json:"initiatedBy"`
-	Created     time.Time `json:"created"`
-	Modified    time.Time `json:"modified"`
+	Id          int        `json:"id"`
+	GroupId     string     `json:"groupId"`
+	Endpoint    string     `json:"endpoint"`
+	Status      string     `json:"status"`
+	Message     string     `json:"message"`
+	RetryCount  int        `json:"retryCount"`
+	Hidden      bool       `json:"hidden"`
+	InitiatedBy string     `json:"initiatedBy"`
+	Created     CustomTime `json:"created"`
+	Modified    CustomTime `json:"modified"`
 }
 
 // ViewQueuedRequest represents a queued request from the view
 type ViewQueuedRequest struct {
-	Id          int       `json:"id"`
-	GroupId     string    `json:"groupId"`
-	Endpoint    string    `json:"endpoint"`
-	Status      string    `json:"status"`
-	Priority    int       `json:"priority"`
-	InitiatedBy string    `json:"initiatedBy"`
-	Created     time.Time `json:"created"`
+	Id          int        `json:"id"`
+	GroupId     string     `json:"groupId"`
+	Endpoint    string     `json:"endpoint"`
+	Status      string     `json:"status"`
+	Priority    int        `json:"priority"`
+	InitiatedBy string     `json:"initiatedBy"`
+	Created     CustomTime `json:"created"`
 }
 
 // ViewRunningRequest represents a running request from the view
 type ViewRunningRequest struct {
-	Id          int       `json:"id"`
-	GroupId     string    `json:"groupId"`
-	Endpoint    string    `json:"endpoint"`
-	Status      string    `json:"status"`
-	InitiatedBy string    `json:"initiatedBy"`
-	Created     time.Time `json:"created"`
-	Modified    time.Time `json:"modified"`
+	Id          int        `json:"id"`
+	GroupId     string     `json:"groupId"`
+	Endpoint    string     `json:"endpoint"`
+	Status      string     `json:"status"`
+	InitiatedBy string     `json:"initiatedBy"`
+	Created     CustomTime `json:"created"`
+	Modified    CustomTime `json:"modified"`
 }
 
 // ============================================================================
@@ -172,15 +224,15 @@ type ViewRunningRequest struct {
 
 // TblToolRequest represents a tool request
 type TblToolRequest struct {
-	Id          int       `json:"id"`
-	ToolId      int       `json:"toolId"`
-	GroupId     string    `json:"groupId"`
-	Status      string    `json:"status"`
-	RequestData string    `json:"requestData"`
-	Message     string    `json:"message"`
-	InitiatedBy string    `json:"initiatedBy"`
-	Created     time.Time `json:"created"`
-	Modified    time.Time `json:"modified"`
+	Id          int        `json:"id"`
+	ToolId      int        `json:"toolId"`
+	GroupId     string     `json:"groupId"`
+	Status      string     `json:"status"`
+	RequestData string     `json:"requestData"`
+	Message     string     `json:"message"`
+	InitiatedBy string     `json:"initiatedBy"`
+	Created     CustomTime `json:"created"`
+	Modified    CustomTime `json:"modified"`
 }
 
 // ============================================================================
@@ -222,13 +274,13 @@ type ToolUpdateDto struct {
 
 // TblToolInstance represents a tool instance
 type TblToolInstance struct {
-	Id              int       `json:"id"`
-	ToolId          int       `json:"toolId"`
-	GroupId         string    `json:"groupId"`
-	TemplateVersion int       `json:"templateVersion"`
-	Status          string    `json:"status"`
-	Created         time.Time `json:"created"`
-	Modified        time.Time `json:"modified"`
+	Id              int        `json:"id"`
+	ToolId          int        `json:"toolId"`
+	GroupId         string     `json:"groupId"`
+	TemplateVersion int        `json:"templateVersion"`
+	Status          string     `json:"status"`
+	Created         CustomTime `json:"created"`
+	Modified        CustomTime `json:"modified"`
 }
 
 // TblToolMetaDatum represents metadata for a tool instance
@@ -245,17 +297,17 @@ type TblToolMetaDatum struct {
 
 // ManagedTeam represents a managed team
 type ManagedTeam struct {
-	GroupId     string    `json:"groupId"`
-	TeamName    string    `json:"teamName"`
-	ProjectNo   string    `json:"projectNo"`
-	ProjectName string    `json:"projectName"`
-	Status      string    `json:"status"`
-	Origin      string    `json:"origin"`
-	Retention   string    `json:"retention"`
-	SiteId      string    `json:"siteId"`
-	Url         string    `json:"url"`
-	Created     time.Time `json:"created"`
-	Modified    time.Time `json:"modified"`
+	GroupId     string     `json:"groupId"`
+	TeamName    string     `json:"teamName"`
+	ProjectNo   string     `json:"projectNo"`
+	ProjectName string     `json:"projectName"`
+	Status      string     `json:"status"`
+	Origin      string     `json:"origin"`
+	Retention   string     `json:"retention"`
+	SiteId      string     `json:"siteId"`
+	Url         string     `json:"url"`
+	Created     CustomTime `json:"created"`
+	Modified    CustomTime `json:"modified"`
 }
 
 // TeamFullDetails represents full team details
@@ -287,14 +339,14 @@ type TeamSearchResult struct {
 
 // TblGroup represents a group record
 type TblGroup struct {
-	GroupId     string    `json:"groupId"`
-	TeamName    string    `json:"teamName"`
-	ProjectNo   string    `json:"projectNo"`
-	ProjectName string    `json:"projectName"`
-	Status      string    `json:"status"`
-	Origin      string    `json:"origin"`
-	Created     time.Time `json:"created"`
-	Modified    time.Time `json:"modified"`
+	GroupId     string     `json:"groupId"`
+	TeamName    string     `json:"teamName"`
+	ProjectNo   string     `json:"projectNo"`
+	ProjectName string     `json:"projectName"`
+	Status      string     `json:"status"`
+	Origin      string     `json:"origin"`
+	Created     CustomTime `json:"created"`
+	Modified    CustomTime `json:"modified"`
 }
 
 // ViewGroup represents a group from ViewGroups
@@ -318,54 +370,54 @@ type ArchiveJob struct {
 	Status         string          `json:"status"`
 	JobType        string          `json:"jobType"`
 	Message        string          `json:"message"`
-	Created        time.Time       `json:"created"`
-	Modified       time.Time       `json:"modified"`
+	Created        CustomTime      `json:"created"`
+	Modified       CustomTime      `json:"modified"`
 	ArchiveSubJobs []ArchiveSubJob `json:"archiveSubJobs,omitempty"`
 }
 
 // ArchiveSubJob represents a sub-job of an archive job
 type ArchiveSubJob struct {
-	Id           int       `json:"id"`
-	ArchiveJobId int       `json:"archiveJobId"`
-	SubJobType   string    `json:"subJobType"`
-	Status       string    `json:"status"`
-	Message      string    `json:"message"`
-	Created      time.Time `json:"created"`
-	Modified     time.Time `json:"modified"`
+	Id           int        `json:"id"`
+	ArchiveJobId int        `json:"archiveJobId"`
+	SubJobType   string     `json:"subJobType"`
+	Status       string     `json:"status"`
+	Message      string     `json:"message"`
+	Created      CustomTime `json:"created"`
+	Modified     CustomTime `json:"modified"`
 }
 
 // RequiredArchiveJob represents a required archive job
 type RequiredArchiveJob struct {
-	GroupId    string    `json:"groupId"`
-	TeamName   string    `json:"teamName"`
-	Retention  string    `json:"retention"`
-	ExpiryDate time.Time `json:"expiryDate"`
-	Status     string    `json:"status"`
+	GroupId    string     `json:"groupId"`
+	TeamName   string     `json:"teamName"`
+	Retention  string     `json:"retention"`
+	ExpiryDate CustomTime `json:"expiryDate"`
+	Status     string     `json:"status"`
 }
 
 // ExportDataJob represents an export data job
 type ExportDataJob struct {
-	Id        int       `json:"id"`
-	RequestId int       `json:"requestId"`
-	GroupId   string    `json:"groupId"`
-	Status    string    `json:"status"`
-	FilePath  string    `json:"filePath"`
-	FileSize  int64     `json:"fileSize"`
-	Message   string    `json:"message"`
-	Created   time.Time `json:"created"`
-	Modified  time.Time `json:"modified"`
+	Id        int        `json:"id"`
+	RequestId int        `json:"requestId"`
+	GroupId   string     `json:"groupId"`
+	Status    string     `json:"status"`
+	FilePath  string     `json:"filePath"`
+	FileSize  int64      `json:"fileSize"`
+	Message   string     `json:"message"`
+	Created   CustomTime `json:"created"`
+	Modified  CustomTime `json:"modified"`
 }
 
 // ClearSiteJob represents a clear site job
 type ClearSiteJob struct {
-	Id              int       `json:"id"`
-	GroupId         string    `json:"groupId"`
-	Status          string    `json:"status"`
-	StorageReleased int64     `json:"storageReleased"`
-	FilesDeleted    int       `json:"filesDeleted"`
-	Message         string    `json:"message"`
-	Created         time.Time `json:"created"`
-	Modified        time.Time `json:"modified"`
+	Id              int        `json:"id"`
+	GroupId         string     `json:"groupId"`
+	Status          string     `json:"status"`
+	StorageReleased int64      `json:"storageReleased"`
+	FilesDeleted    int        `json:"filesDeleted"`
+	Message         string     `json:"message"`
+	Created         CustomTime `json:"created"`
+	Modified        CustomTime `json:"modified"`
 }
 
 // ClearSiteJobsSummary represents clear site jobs summary
@@ -384,12 +436,12 @@ type ClearSiteJobsSummary struct {
 
 // TblToolBoxLogger represents a log entry
 type TblToolBoxLogger struct {
-	Id          int       `json:"id"`
-	Subject     string    `json:"subject"`
-	Status      string    `json:"status"`
-	Message     string    `json:"message"`
-	InitiatedBy string    `json:"initiatedBy"`
-	Created     time.Time `json:"created"`
+	Id          int        `json:"id"`
+	Subject     string     `json:"subject"`
+	Status      string     `json:"status"`
+	Message     string     `json:"message"`
+	InitiatedBy string     `json:"initiatedBy"`
+	Created     CustomTime `json:"created"`
 }
 
 // LogEntry represents a new log entry to be created
@@ -453,14 +505,14 @@ type ExtendedRequirementCreate struct {
 
 // TblTask represents a background task
 type TblTask struct {
-	Id        int       `json:"id"`
-	ProjectNo string    `json:"projectNo"`
-	JobType   int       `json:"jobType"`
-	Status    int       `json:"status"`
-	Data      string    `json:"data"`
-	Message   string    `json:"message"`
-	Created   time.Time `json:"created"`
-	Modified  time.Time `json:"modified"`
+	Id        int        `json:"id"`
+	ProjectNo string     `json:"projectNo"`
+	JobType   int        `json:"jobType"`
+	Status    int        `json:"status"`
+	Data      string     `json:"data"`
+	Message   string     `json:"message"`
+	Created   CustomTime `json:"created"`
+	Modified  CustomTime `json:"modified"`
 }
 
 // ============================================================================

@@ -1,10 +1,9 @@
 package teamToolboxCmd
 
 import (
-	"fmt"
-	"os"
-
+	"github.com/pterm/pterm"
 	teamToolBoxHelper "github.com/saricon83-sudo/Tyr365AdminCli/TeamToolBoxHelper"
+	"github.com/saricon83-sudo/Tyr365AdminCli/internal/output"
 	"github.com/spf13/cobra"
 )
 
@@ -13,21 +12,23 @@ var getRequestPerTool = &cobra.Command{
 	Short: "Gets requests for a specific tool",
 	Long:  `This command queries and returns all entries of a specific tool from the DB`,
 	Run: func(cmd *cobra.Command, args []string) {
-
 		client, err := teamToolBoxHelper.CreateAdminAPI()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error creating admin API client: %v\n", err)
+			pterm.Error.Printf("Failed to connect to Admin API: %v\n", err)
 			return
 		}
 
+		spinner, _ := pterm.DefaultSpinner.Start("Fetching requests per tool...")
 		response, err := client.GetRequestsByTool()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error fetching requests by tool: %v\n", err)
+			spinner.Fail(err.Error())
 			return
 		}
+		spinner.Success("Tool request counts loaded!")
 
-		teamToolBoxHelper.PrintToolRequestCountTable(response)
-
+		output.PrintResult(response, func() {
+			teamToolBoxHelper.PrintToolRequestCountTable(response)
+		})
 	},
 }
 
